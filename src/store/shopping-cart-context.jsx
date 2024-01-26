@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useReducer } from 'react';
 import { DUMMY_PRODUCTS } from '../dummy-products.js';
 
 
@@ -8,8 +8,18 @@ export const CartContext = createContext({
     updateItemQuantity: () => { },
 });
 
+function shoppingCartReducer(state, action) { //defined outside of the component to avoid re-creation on every render
+    return state;
+}
 
 export default function CartContextProvider({ children }) {
+    const [shoppingCartState, shoppingCartDispatch] = useReducer(
+        shoppingCartReducer,
+        {
+            items: []
+        }
+    );
+
     const [shoppingCart, setShoppingCart] = useState({
         items: [],
     });
@@ -71,7 +81,7 @@ export default function CartContextProvider({ children }) {
     }
 
     const ctxValue = { //create the context
-        items: shoppingCart.items,
+        items: shoppingCartState.items,
         addItemToCart: handleAddItemToCart,
         updateItemQuantity: handleUpdateCartItemQuantity,
     };
